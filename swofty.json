@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "id": "msyeett.grand-prix-saves",
+  "name": "Grand Prix Saves",
+  "version": "0.1.0",
+  "author": "msyeett",
+  "description": "Keeps up to 10 offline Grand Prix saves instead of one: a card for each save on the Grand Prix screen, plus Create New.",
+  "license": "MIT",
+  "repository": "https://github.com/constructor-mods/grand-prix-saves",
+  "kind": [
+    "erp",
+    "native"
+  ],
+  "compat": {
+    "game": "f1_25",
+    "launcher": ">=1.8.10"
+  },
+  "requires": [
+    {
+      "id": "swofty.core",
+      "version": ">=0.1.0"
+    }
+  ],
+  "operations": {
+    "erp": [
+      "erp/grand_prix_screen.json"
+    ],
+    "native": [
+      {
+        "dll": "native/grand_prix_saves.dll"
+      }
+    ]
+  },
+  "icon": "icons/grand-prix-saves.png"
+}

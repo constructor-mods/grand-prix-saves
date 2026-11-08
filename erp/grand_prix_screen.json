@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "ops": [
+    {
+      "op": "replace-resource",
+      "erp": "2025_asset_groups/ui_package/flow_frontend.erp",
+      "resource": "eaid://ui_package/art/screens/grand_prix/gp_continue.idf",
+      "source": "ui/gp_continue.idf"
+    },
+    {
+      "op": "replace-resource",
+      "erp": "2025_asset_groups/ui_package/screens/grand_prix_continue.erp",
+      "resource": "eaid://ui_package/art/screens/grand_prix/gp_continue.idf",
+      "source": "ui/gp_continue.idf"
+    },
+    {
+      "op": "replace-resource",
+      "erp": "2025_asset_groups/ui_package/flow_frontend.erp",
+      "resource": "eaid://ui_package/screens/grand_prix_continue.ui",
+      "fragment": 0,
+      "source": "ui/grand_prix_continue.ui"
+    },
+    {
+      "op": "replace-resource",
+      "erp": "2025_asset_groups/ui_package/screens/grand_prix_continue.erp",
+      "resource": "eaid://ui_package/screens/grand_prix_continue.ui",
+      "fragment": 0,
+      "source": "ui/grand_prix_continue.ui"
+    },
+    {
+      "op": "replace-resource",
+      "erp": "2025_asset_groups/ui_package/flow_frontend.erp",
+      "resource": "eaid://ui_package/screens/benchmark_results.ui",
+      "fragment": 1,
+      "source": "ui/benchmark_results_templates.ui"
+    },
+    {
+      "op": "replace-resource",
+      "erp": "2025_asset_groups/ui_package/screens/benchmark_results.erp",
+      "resource": "eaid://ui_package/screens/benchmark_results.ui",
+      "fragment": 1,
+      "source": "ui/benchmark_results_templates.ui"
+    }
+  ]
+}
