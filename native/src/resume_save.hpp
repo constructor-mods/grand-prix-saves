@@ -31,14 +31,6 @@ using SelectSave = int (*)(void *list, uint64_t save_id, bool force, uint32_t un
 
 inline MenuCommand g_original_menu_command = nullptr;
 
-inline bool holds_grand_prix(uintptr_t save)
-{
-    uint8_t mode = 0;
-    uint8_t has_game = 0;
-    return save && swofty::mem::read(save + kSlotMode, mode) && swofty::mem::read(save + kSlotFlagsTwo, has_game) &&
-           mode == kGrandPrixMode && has_game;
-}
-
 // In one save list: when the save in use holds no Grand Prix, the newest one that does is put in use.
 inline void use_a_real_save_in(uintptr_t list, const char *where)
 {

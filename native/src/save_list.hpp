@@ -205,8 +205,10 @@ inline void build_save_list(void *screen, const std::vector<uintptr_t> &saves, u
         }
     }
     g_last_card_count = cards;
-    // The first stock card shows its own save again.
-    fill(screen, reinterpret_cast<void *>(first_save), 0);
+    // The first stock card shows its own save again (none when the list is built again by the addon).
+    if (first_save) {
+        fill(screen, reinterpret_cast<void *>(first_save), 0);
+    }
     swofty::log("[grand-prix-saves] save list: %d save card(s)%s%s", index, index < kMostSaves ? " and a new card" : "",
                 again ? " (built again)" : "");
     if (again) {

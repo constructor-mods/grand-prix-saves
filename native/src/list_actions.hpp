@@ -91,6 +91,48 @@ inline void start_new_now(void *screen)
     send_screen_event(screen, "start_transition_out");
 }
 
+constexpr uintptr_t kInputBlocked = 0x12f0;      // the screen takes no presses while this is on
+
+// Whether a save is still in the screen's save list (one deleted with F2 is taken out of it).
+inline bool still_listed(void *screen, uintptr_t save)
+{
+    for (uintptr_t listed : grand_prix_saves(save_list_of_screen(screen))) {
+        if (listed == save) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// When a card's save was deleted, the list is built again (after deleting the last save the game fills no card,
+// so it is not built again on its own). Returns whether it was.
+inline bool rebuild_if_a_save_is_gone(void *screen)
+{
+    for (const Row &row : g_rows) {
+        if (row.save && !still_listed(screen, row.save)) {
+            g_delete_pressed = true;
+            build_save_list(screen, grand_prix_saves(save_list_of_screen(screen)), 0, g_original_fill);
+            return true;
+        }
+    }
+    return false;
+}
+
+// The screen's own delete (runs when the game's delete message is accepted).
+constexpr int kDeleteSlot = 20;
+constexpr uintptr_t kDeleteFunction = 0x1bcf3b0;
+using DeleteSave = uint64_t (*)(void *screen, void *more_1, void *more_2, void *more_3);
+inline DeleteSave g_original_delete = nullptr;
+
+inline uint64_t delete_save(void *screen, void *more_1, void *more_2, void *more_3)
+{
+    uint64_t result = g_original_delete(screen, more_1, more_2, more_3);
+    if (rebuild_if_a_save_is_gone(screen)) {
+        swofty::log("[grand-prix-saves] save deleted: list built again");
+    }
+    return result;
+}
+
 inline uint64_t command(void *screen, void *command_data, void *data, void *more)
 {
     uint32_t name = 0;
@@ -116,6 +158,13 @@ inline uint64_t command(void *screen, void *command_data, void *data, void *more
         return 0;
     }
     uintptr_t save = g_rows[row].save;
+    // A save deleted a moment ago is gone from the list: its card does nothing, and the list is built again here.
+    // (After deleting the last save the game fills no card, so the list is not built again on its own.)
+    if (save && !still_listed(screen, save)) {
+        swofty::log("[grand-prix-saves] card %s: that save was just deleted, ignored", focused ? "focus" : "press");
+        rebuild_if_a_save_is_gone(screen);
+        return 0;
+    }
     if (focused) {
         if (save) {
             // The right panel only shows all of a card again (the track picture too) when another card is selected:
@@ -128,9 +177,10 @@ inline uint64_t command(void *screen, void *command_data, void *data, void *more
         make_new_card(screen);
         return run_screen_function(screen, kFocusCard, kNewCard);
     }
-    // The Enter that accepts the game's delete message must not also press the card the list lands on.
-    if (GetTickCount64() - g_rebuilt_at < kPressQuietMs) {
-        swofty::log("[grand-prix-saves] card press right after the list was built again: ignored");
+    // The Enter that accepts the game's delete message must not also press a card. The game blocks input while it
+    // deletes, as its own press does.
+    if (*(static_cast<uint8_t *>(screen) + kInputBlocked) || GetTickCount64() - g_rebuilt_at < kPressQuietMs) {
+        swofty::log("[grand-prix-saves] card press while deleting a save: ignored");
         return 0;
     }
     if (save) {
@@ -148,7 +198,10 @@ inline void catch_commands()
 {
     bool caught = swap_entry(kCommandSlot, kCommandFunction, reinterpret_cast<void *>(&command),
                              reinterpret_cast<void **>(&g_original_command));
-    swofty::log("[grand-prix-saves] card actions: %s", caught ? "on" : "off (this game build is not supported)");
+    bool delete_caught = swap_entry(kDeleteSlot, kDeleteFunction, reinterpret_cast<void *>(&delete_save),
+                                    reinterpret_cast<void **>(&g_original_delete));
+    swofty::log("[grand-prix-saves] card actions: %s%s", caught ? "on" : "off (this game build is not supported)",
+                delete_caught ? "" : ", delete: off");
 }
 
 } // namespace grand_prix_saves

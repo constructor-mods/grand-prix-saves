@@ -106,7 +106,45 @@ inline uintptr_t card_address(void *screen, int card)
     return reinterpret_cast<uintptr_t>(screen) + kCards + uintptr_t(card) * kCardSize;
 }
 
-constexpr uint8_t kGrandPrixMode = 13;
+// Saves of these kinds never get a card (the game's own check).
+constexpr uint8_t kHiddenTypes = 0x41;
+
+// A save the game would show as a card: it holds a game and is not of a hidden kind. Any season, any year.
+inline bool holds_grand_prix(uintptr_t save)
+{
+    uint8_t types = 0;
+    uint8_t has_game = 0;
+    return save && swofty::mem::read(save + kSlotTypeFlags, types) && swofty::mem::read(save + kSlotFlagsTwo, has_game) &&
+           !(types & kHiddenTypes) && has_game;
+}
+
+// Writes every save of the list to the log once per game run, with why it is or is not a Grand Prix card.
+inline bool g_list_logged = false;
+
+inline void log_saves_once(uintptr_t begin, uintptr_t end)
+{
+    if (g_list_logged) {
+        return;
+    }
+    g_list_logged = true;
+    for (uintptr_t at = begin; at < end; at += 8) {
+        uintptr_t slot = 0;
+        if (!swofty::mem::read(at, slot) || !slot) {
+            continue;
+        }
+        uint64_t id = 0;
+        uint8_t mode = 0;
+        uint8_t types = 0;
+        uint8_t has_game = 0;
+        swofty::mem::read(slot + kSlotId, id);
+        swofty::mem::read(slot + kSlotMode, mode);
+        swofty::mem::read(slot + kSlotTypeFlags, types);
+        swofty::mem::read(slot + kSlotFlagsTwo, has_game);
+        swofty::log("[grand-prix-saves] save %llu: mode %u, kind %02x, holds a game %u: %s",
+                    static_cast<unsigned long long>(id), mode, types, has_game,
+                    holds_grand_prix(slot) ? "shown" : "left out");
+    }
+}
 
 // The Grand Prix saves that hold a game, newest first (each save's place in memory).
 inline std::vector<uintptr_t> grand_prix_saves(uintptr_t list)
@@ -118,13 +156,11 @@ inline std::vector<uintptr_t> grand_prix_saves(uintptr_t list)
         !swofty::mem::read(list + kSlotsEnd, end) || end < begin || (end - begin) / 8 > 64) {
         return {};
     }
+    log_saves_once(begin, end);
     for (uintptr_t at = begin; at < end; at += 8) {
         uintptr_t slot = 0;
-        uint8_t mode = 0;
-        uint8_t has_game = 0;
         uint64_t date = 0;
-        if (!swofty::mem::read(at, slot) || !slot || !swofty::mem::read(slot + kSlotMode, mode) ||
-            !swofty::mem::read(slot + kSlotFlagsTwo, has_game) || mode != kGrandPrixMode || !has_game) {
+        if (!swofty::mem::read(at, slot) || !holds_grand_prix(slot)) {
             continue;
         }
         swofty::mem::read(slot + kSlotDate, date);
