@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.2
+- Shows as tested on Steam in the launcher's Addon Browser, in the Utility category. Needs launcher 1.8.36 or newer.
+
 ## 0.1.1
 - Saves from season boxes (like SWOFTY Seasons 2017) now show up. Before, only Create New was offered.
 - Fixed a crash when deleting a save with F2.
