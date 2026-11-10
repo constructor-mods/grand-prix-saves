@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.3
+- With no saves, Grand Prix now opens the saves screen with just the Create New card, instead of going straight to
+  a new Grand Prix (for example after backing out of one, or deleting your last save).
+- Fixed Create New sometimes doing nothing when pressed.
+
 ## 0.1.2
 - Shows as tested on Steam in the launcher's Addon Browser, in the Utility category. Needs launcher 1.8.36 or newer.
 

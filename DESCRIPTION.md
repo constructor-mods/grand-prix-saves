@@ -10,10 +10,11 @@ Keeps up to **10 offline Grand Prix saves** instead of one. Every save gets its 
 - The **Create New** card under your saves starts a new Grand Prix in a save of its own.
 - No more "this will overwrite your existing Grand Prix" warning: your other saves stay.
 - Change your mind and back out before the race? Your saves are still there next time.
+- No saves yet? Grand Prix still opens this screen, with just the Create New card.
 - Up to 10 saves. At 10 the Create New card goes; delete one to make room.
 
 ### Needs
-- Swofty Launcher 1.8.10 or newer.
+- Swofty Launcher 1.8.36 or newer.
 - Offline sessions only, like all modded play.
 
 ### Credits

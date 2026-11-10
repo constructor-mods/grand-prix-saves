@@ -91,7 +91,6 @@ inline void start_new_now(void *screen)
     send_screen_event(screen, "start_transition_out");
 }
 
-constexpr uintptr_t kInputBlocked = 0x12f0;      // the screen takes no presses while this is on
 
 // Whether a save is still in the screen's save list (one deleted with F2 is taken out of it).
 inline bool still_listed(void *screen, uintptr_t save)
@@ -124,8 +123,12 @@ constexpr uintptr_t kDeleteFunction = 0x1bcf3b0;
 using DeleteSave = uint64_t (*)(void *screen, void *more_1, void *more_2, void *more_3);
 inline DeleteSave g_original_delete = nullptr;
 
+// When the game's delete message was last accepted.
+inline uint64_t g_deleted_at = 0;
+
 inline uint64_t delete_save(void *screen, void *more_1, void *more_2, void *more_3)
 {
+    g_deleted_at = GetTickCount64();
     uint64_t result = g_original_delete(screen, more_1, more_2, more_3);
     if (rebuild_if_a_save_is_gone(screen)) {
         swofty::log("[grand-prix-saves] save deleted: list built again");
@@ -177,9 +180,11 @@ inline uint64_t command(void *screen, void *command_data, void *data, void *more
         make_new_card(screen);
         return run_screen_function(screen, kFocusCard, kNewCard);
     }
-    // The Enter that accepts the game's delete message must not also press a card. The game blocks input while it
-    // deletes, as its own press does.
-    if (*(static_cast<uint8_t *>(screen) + kInputBlocked) || GetTickCount64() - g_rebuilt_at < kPressQuietMs) {
+    // The Enter that accepts the game's delete message must not also press a card: presses wait a moment after a
+    // delete. (The screen's own "input blocked" mark can stay on after a new Grand Prix was started, so it is not used.)
+    uint64_t now = GetTickCount64();
+    bool blocked = now - g_deleted_at < kPressQuietMs;
+    if (blocked || now - g_rebuilt_at < kPressQuietMs) {
         swofty::log("[grand-prix-saves] card press while deleting a save: ignored");
         return 0;
     }

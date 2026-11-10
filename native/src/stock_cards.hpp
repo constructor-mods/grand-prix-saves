@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // The Grand Prix screen's own cards. The game fills them from the save list; they stay hidden and are used to show
 // and continue the saves of the list. They show only the newest save, so the second one is always the game's own
-// "start new" card. Each time the game fills its first card, the list of saves is built (again).
+// "start new" card. Each time the game fills its first card (or empties it, with no saves), the list is built again.
 #pragma once
 #include <swofty/mem.hpp>
 #include <swofty/mixin.hpp>
@@ -20,10 +20,14 @@ constexpr int kSkipSlot = 34;  // asks whether a save is left out of the cards
 constexpr uintptr_t kSkipFunction = 0x1a077b0;
 constexpr int kFillSlot = 28;  // fills one card from a save
 constexpr uintptr_t kFillFunction = 0x1bccd80;
+constexpr int kClearSlot = 36; // empties a card no save is put on
+constexpr uintptr_t kClearFunction = 0x1a1e8d0;
 
 using SkipSave = uint64_t (*)(void *screen, void *save);
 inline SkipSave g_original_skip = nullptr;
 inline FillCard g_original_fill = nullptr;
+using ClearCard = uint64_t (*)(void *screen, uint64_t card, void *more_1, void *more_2);
+inline ClearCard g_original_clear = nullptr;
 
 // Every Grand Prix save but the newest is left out of the game's own cards.
 inline uint64_t skip_save(void *screen, void *save)
@@ -44,6 +48,17 @@ inline uint64_t fill_card(void *screen, void *save, uint64_t card)
     if ((card & 0xff) == 0) {
         build_save_list(screen, grand_prix_saves(save_list_of_screen(screen)), reinterpret_cast<uintptr_t>(save),
                         g_original_fill);
+    }
+    return result;
+}
+
+// With no saves the game fills no card, it only empties them: the list (only Create New) is built when the first
+// card is emptied.
+inline uint64_t clear_card(void *screen, uint64_t card, void *more_1, void *more_2)
+{
+    uint64_t result = g_original_clear(screen, card, more_1, more_2);
+    if ((card & 0xff) == 0) {
+        build_save_list(screen, grand_prix_saves(save_list_of_screen(screen)), 0, g_original_fill);
     }
     return result;
 }
@@ -72,7 +87,9 @@ inline void catch_cards()
                               reinterpret_cast<void **>(&g_original_skip));
     bool fill_ok = swap_entry(kFillSlot, kFillFunction, reinterpret_cast<void *>(&fill_card),
                               reinterpret_cast<void **>(&g_original_fill));
-    if (!skip_ok || !fill_ok) {
+    bool clear_ok = swap_entry(kClearSlot, kClearFunction, reinterpret_cast<void *>(&clear_card),
+                               reinterpret_cast<void **>(&g_original_clear));
+    if (!skip_ok || !fill_ok || !clear_ok) {
         swofty::log("[grand-prix-saves] Grand Prix screen: this game build is not supported");
     }
 }
