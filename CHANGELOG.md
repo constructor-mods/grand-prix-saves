@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.4
+- Cheaper memory checks with Swofty Launcher 1.9.30 or newer (fewer small hitches).
+
 ## 0.1.3
 - With no saves, Grand Prix now opens the saves screen with just the Create New card, instead of going straight to
   a new Grand Prix (for example after backing out of one, or deleting your last save).

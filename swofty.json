@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "msyeett.grand-prix-saves",
   "name": "Grand Prix Saves",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "author": "msyeett",
   "description": "Keeps up to 10 offline Grand Prix saves instead of one: a card for each save on the Grand Prix screen, plus Create New.",
   "license": "MIT",
