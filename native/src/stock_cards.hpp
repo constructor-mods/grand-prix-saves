@@ -17,11 +17,11 @@
 namespace grand_prix_saves {
 
 constexpr int kSkipSlot = 34;  // asks whether a save is left out of the cards
-constexpr uintptr_t kSkipFunction = 0x1a077b0;
+constexpr uintptr_t kSkipFunction = 0x1a08f90;
 constexpr int kFillSlot = 28;  // fills one card from a save
-constexpr uintptr_t kFillFunction = 0x1bccd80;
+constexpr uintptr_t kFillFunction = 0x1bce980;
 constexpr int kClearSlot = 36; // empties a card no save is put on
-constexpr uintptr_t kClearFunction = 0x1a1e8d0;
+constexpr uintptr_t kClearFunction = 0x1a200b0;
 
 using SkipSave = uint64_t (*)(void *screen, void *save);
 inline SkipSave g_original_skip = nullptr;

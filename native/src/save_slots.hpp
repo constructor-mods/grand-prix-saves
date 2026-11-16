@@ -12,7 +12,7 @@
 namespace grand_prix_saves {
 
 // The Grand Prix "Continue / Start new" screen.
-constexpr uintptr_t kContinueVtable = 0x5739fa0;
+constexpr uintptr_t kContinueVtable = 0x573c0d0;
 constexpr int kFindModeSlot = 31; // the Grand Prix mode's entity
 constexpr uintptr_t kCards = 0x328;
 constexpr uintptr_t kCardSize = 0x540;
@@ -22,7 +22,7 @@ constexpr uintptr_t kCardSlotId = 0x8; // the save a card shows; the card's firs
 constexpr uintptr_t kModeObject = 0xf08;
 constexpr uintptr_t kModeChildren = 0x238;
 constexpr uintptr_t kModeChildrenEnd = 0x240;
-constexpr uintptr_t kSaveSlotsVtable = 0x57b6060;
+constexpr uintptr_t kSaveSlotsVtable = 0x57b81a0;
 constexpr uintptr_t kSlotsBegin = 0x268;
 constexpr uintptr_t kSlotsEnd = 0x270;
 constexpr uintptr_t kCurrentSlot = 0x280;

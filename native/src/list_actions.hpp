@@ -17,7 +17,7 @@
 namespace grand_prix_saves {
 
 constexpr int kCommandSlot = 10;                 // the screen's command handler
-constexpr uintptr_t kCommandFunction = 0x1a0b280;
+constexpr uintptr_t kCommandFunction = 0x1a0ca60;
 constexpr uintptr_t kFocusCard = 0xc8;           // the screen's own "a card was focused" (screen, card)
 constexpr uintptr_t kPressCard = 0xc0;           // the screen's own "a card was pressed" (screen, card)
 constexpr uintptr_t kScreenState = 0x1368;
@@ -45,7 +45,7 @@ inline uint64_t run_screen_function(void *screen, uintptr_t offset, uint64_t car
 constexpr int kSaveCard = 0;
 
 // The game's card loop sets the card's track (title, picture, flag) after its fill, from the save's track number.
-constexpr uintptr_t kSetCardTrack = 0x1a3a960;   // (screen, card, track)
+constexpr uintptr_t kSetCardTrack = 0x1a3c140;   // (screen, card, track)
 constexpr uintptr_t kSlotTrack = 0xb5;           // in a save: its track number
 using SetCardTrack = void (*)(void *screen, uint64_t card, uint64_t track);
 
@@ -68,7 +68,7 @@ inline void put_on_save_card(void *screen, uintptr_t save)
 // Makes stock card 1 the game's "start new" card again: no save, and the right panel's "New Grand Prix" look
 // (its use_new_variation switch, link 0x38) on. A save shown on it earlier would otherwise stay in the panel.
 constexpr uintptr_t kNewLookLink = 0x38;
-constexpr uintptr_t kSetBoolNode = 0x973e20;     // sets a yes/no data node (node, value, 0, 0)
+constexpr uintptr_t kSetBoolNode = 0x973e70;     // sets a yes/no data node (node, value, 0, 0)
 using SetBoolNode = void (*)(void *node, uint8_t *value, void *unused_1, void *unused_2);
 
 inline void make_new_card(void *screen)
@@ -119,7 +119,7 @@ inline bool rebuild_if_a_save_is_gone(void *screen)
 
 // The screen's own delete (runs when the game's delete message is accepted).
 constexpr int kDeleteSlot = 20;
-constexpr uintptr_t kDeleteFunction = 0x1bcf3b0;
+constexpr uintptr_t kDeleteFunction = 0x1bd0fb0;
 using DeleteSave = uint64_t (*)(void *screen, void *more_1, void *more_2, void *more_3);
 inline DeleteSave g_original_delete = nullptr;
 

@@ -15,12 +15,12 @@
 namespace grand_prix_saves {
 
 constexpr int kStartNewSlot = 22; // the action that runs when "Start new Grand Prix" is accepted
-constexpr uintptr_t kStartNewFunction = 0x1bcc790;
+constexpr uintptr_t kStartNewFunction = 0x1bce390;
 constexpr uint64_t kNoSave = 0xffffffffffffffff;
 constexpr int kSavesToKeep = 10;
 
 // The game's own "make a new save": it keeps the one in use and makes the new one the one in use.
-constexpr uintptr_t kCreateSaveFunction = 0x29d1890;
+constexpr uintptr_t kCreateSaveFunction = 0x29d3c50;
 constexpr uintptr_t kSlotName = 0x20;
 constexpr uint8_t kNoMode = 255;              // a save that never held a game
 

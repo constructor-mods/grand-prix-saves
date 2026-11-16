@@ -9,9 +9,9 @@
 namespace grand_prix_saves {
 
 // Game functions this build of the game has at these places.
-constexpr uintptr_t kCardSetup = 0x1a3dcb0;      // makes a card's data under a parent and links the card to it
-constexpr uintptr_t kMoveLink = 0x42bc170;       // moves a link: the old one is let go, the new one takes its place
-constexpr uintptr_t kSetHasSave = 0x1a09040;     // marks a card as holding a save (or not)
+constexpr uintptr_t kCardSetup = 0x1a3f490;      // makes a card's data under a parent and links the card to it
+constexpr uintptr_t kMoveLink = 0x42be740;       // moves a link: the old one is let go, the new one takes its place
+constexpr uintptr_t kSetHasSave = 0x1a0a820;     // marks a card as holding a save (or not)
 
 using GetListChild = void **(*)(void *registry, void *parent, const uint32_t *hash);
 using SetString = void *(*)(void *registry, void *parent, const char *name, void **value, int overwrite);
@@ -37,7 +37,7 @@ struct GameData {
 };
 
 // Sends a named event to the screen, as the game does (for example "start_transition_out").
-constexpr uintptr_t kSendEvent = 0x4320fe0;
+constexpr uintptr_t kSendEvent = 0x43235b0;
 struct ScreenEvent {
     uint32_t kind = 4;
     uint32_t unused_1 = 0;
@@ -79,16 +79,16 @@ inline const GameData &game_data()
     static bool looked = false;
     if (!looked) {
         looked = true;
-        data.get_list_child = reinterpret_cast<GetListChild>(find_function("Vm_GetOrCreate_ListChild", 0x42b30e0));
-        data.get_child = reinterpret_cast<GetListChild>(find_function("Vm_GetOrCreate_ChildNode", 0x42b2bf0));
-        data.set_string = reinterpret_cast<SetString>(find_function("Vm_Set_String", 0x846270));
-        data.set_bool = reinterpret_cast<SetBool>(find_function("Vm_Set_Bool", 0x975db0));
-        data.set_node_ref = reinterpret_cast<SetNodeRef>(find_function("Vm_Set_NodeRef", 0x83c270));
-        data.make_text = reinterpret_cast<MakeText>(find_function("Ne_Make_StrFromCStr", 0x41974e0));
+        data.get_list_child = reinterpret_cast<GetListChild>(find_function("Vm_GetOrCreate_ListChild", 0x42b56b0));
+        data.get_child = reinterpret_cast<GetListChild>(find_function("Vm_GetOrCreate_ChildNode", 0x42b51c0));
+        data.set_string = reinterpret_cast<SetString>(find_function("Vm_Set_String", 0x8462c0));
+        data.set_bool = reinterpret_cast<SetBool>(find_function("Vm_Set_Bool", 0x975e00));
+        data.set_node_ref = reinterpret_cast<SetNodeRef>(find_function("Vm_Set_NodeRef", 0x83c2c0));
+        data.make_text = reinterpret_cast<MakeText>(find_function("Ne_Make_StrFromCStr", 0x4199ab0));
         data.card_setup = reinterpret_cast<CardSetup>(find_function(nullptr, kCardSetup));
         data.move_link = reinterpret_cast<MoveLink>(find_function("Vm_MoveAssign_NodeHandle", kMoveLink));
         data.set_has_save = reinterpret_cast<SetHasSave>(find_function(nullptr, kSetHasSave));
-        data.registry_slot = find_function("g_Vm_Registry", 0x6ca54f8);
+        data.registry_slot = find_function("g_Vm_Registry", 0x6ca74f8);
     }
     return data;
 }

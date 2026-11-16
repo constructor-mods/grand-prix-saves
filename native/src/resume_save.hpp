@@ -16,16 +16,16 @@
 
 namespace grand_prix_saves {
 
-constexpr uintptr_t kMenuVtable = 0x572ac70;     // the play menu (Grand Prix, Time Trial, ...)
+constexpr uintptr_t kMenuVtable = 0x572cda0;     // the play menu (Grand Prix, Time Trial, ...)
 constexpr int kMenuCommandSlot = 10;
-constexpr uintptr_t kMenuCommandFunction = 0x1a77d60;
+constexpr uintptr_t kMenuCommandFunction = 0x1a79540;
 constexpr uint32_t kMenuBack = 0x493fe92b;        // "back_pressed": leaving the menu
 constexpr uint32_t kPlayCardsShown = 0x1b4084ea;  // the Play cards (Grand Prix, Time Trial) are shown
 constexpr uint32_t kYearPicked = 0xa2f65c38;      // a year picked: the game then opens the saves or a new Grand Prix
 constexpr uint32_t kOpenNew = 0x85c5993c;         // "grand_prix_new": the game's answer when no save holds a Grand Prix
 constexpr uint32_t kOpenSaves = 0xc90050e3;       // "grand_prix_resume": open the saves screen
 constexpr uintptr_t kMenuModes = 0x2f0;          // in the menu: the game's modes
-constexpr uintptr_t kFindMode = 0x7d0de0;        // finds a mode by name (modes, name)
+constexpr uintptr_t kFindMode = 0x7d0e20;        // finds a mode by name (modes, name)
 constexpr const char *kGrandPrixModes[] = {"F1_Championship_Season", "F1_2026_Championship_Season"};
 
 using MenuCommand = uint64_t (*)(void *menu, void *command, void *data, void *more);
