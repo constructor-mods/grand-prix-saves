@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.5
+- Works with the F1 25 game update of 16 November 2026 (before, the saves cards were gone and the stock screen was back).
+
 ## 0.1.4
 - Cheaper memory checks with Swofty Launcher 1.9.30 or newer (fewer small hitches).
 
